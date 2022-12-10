@@ -1,7 +1,10 @@
-import { WechatyBuilder } from "wechaty";
+import { users, WechatyBuilder } from "wechaty";
 import QRCode from "qrcode";
 import { ChatGPTBot } from "./chatgpt.js";
+import AliDrive from "./AliDrive.js";
+import Utils from "./Utils.js";
 const chatGPTBot = new ChatGPTBot();
+const aliDrive = new AliDrive();
 
 const bot = WechatyBuilder.build({
   name: "wechat-assistant", // generate xxxx.memory-card.json and save login data for the next login
@@ -9,6 +12,7 @@ const bot = WechatyBuilder.build({
 // get a Wechaty instance
 
 async function main() {
+  let userName:string | null = null;
   bot
     .on("scan", async (qrcode, status) => {
       const url = `https://wechaty.js.org/qrcode/${encodeURIComponent(qrcode)}`;
@@ -19,7 +23,9 @@ async function main() {
     })
     .on("login", async (user) => {
       console.log(`User ${user} logged in`);
-      chatGPTBot.setBotName(user.name());
+      userName = user.name();
+      chatGPTBot.setBotName(userName);
+      aliDrive.setBotName(userName);
       await chatGPTBot.startGPTBot();
     })
     .on("message", async (message) => {
@@ -29,7 +35,15 @@ async function main() {
       }
       try {
         console.log(`Message: ${message}`);
-        await chatGPTBot.onMessage(message);
+        const realText = Utils.getRealText(message, userName!);
+        switch (realText.slice(0,1)) {
+          case '#':
+            await aliDrive.onMessage(message);
+            break;
+          default:
+            await chatGPTBot.onMessage(message);
+            break;
+        }
       } catch (e) {
         console.error(e);
       }

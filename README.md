@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to wechat-chatgpt 👋</h1>
+<h1 align="center">Welcome to wechat-ai-assistant 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -31,26 +31,26 @@ English | [中文文档](README_ZH.md)
 cp config.yaml.example config.yaml
 # Change Config.yaml
 # run docker command in Linux or WindowsPowerShell
-docker run -d --name wechat-chatgpt -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker run -d --name wechat-ai-assistant -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 # login with qrcode
-docker logs -f wechat-chatgpt
+docker logs -f wechat-ai-assistant
 ```
 ## Use with docker in Windows
 ```sh
 # Create and modify config.yaml in the current directory
 # run docker command in WindowsPowerShell
-docker run -d --name wechat-chatgpt -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker run -d --name wechat-ai-assistant -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 # In the Windows command line (cmd) environment, you may mount the current directory like this:
-docker run -d --name wechat-chatgpt -v %cd%/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker run -d --name wechat-ai-assistant -v %cd%/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 # login with qrcode
-docker logs -f wechat-chatgpt
+docker logs -f wechat-ai-assistant
 ```
 ## Upgrade Docker Image Version
 ```sh
-docker pull holegots/wechat-chatgpt:latest
-docker stop wechat-chatgpt
-docker rm wechat-chatgpt
-docker run -d --name wechat-chatgpt -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker pull holegots/wechat-ai-assistant:latest
+docker stop wechat-ai-assistant
+docker rm wechat-ai-assistant
+docker run -d --name wechat-ai-assistant -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 ```
 ## Install
 
@@ -126,7 +126,7 @@ If you are logging in for the first time, then you need to scan the qrcode.
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/fuergaosi233/wechat-chatgpt/issues).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/fuergaosi233/wechat-ai-assistant/issues).
 
 ## Show your support
 

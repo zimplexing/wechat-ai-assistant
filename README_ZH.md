@@ -1,4 +1,4 @@
-<h1 align="center">欢迎使用 wechat-chatgpt 👋</h1>
+<h1 align="center">欢迎使用 wechat-ai-assistant 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -31,27 +31,27 @@
 cp config.yaml.example config.yaml
 # Change Config.yaml
 # 在Linux或WindowsPowerShell上运行如下命令
-docker run -d --name wechat-chatgpt -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker run -d --name wechat-ai-assistant -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 # 使用二维码登陆
-docker logs -f wechat-chatgpt
+docker logs -f wechat-ai-assistant
 ```
 
 ## 在Windows上通过Docker使用
 ```sh
 # 在当前目录创建并修改config.yaml
 # 在WindowsPowerShell中运行如下命令
-docker run -d --name wechat-chatgpt -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker run -d --name wechat-ai-assistant -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 # 在Windows command line (cmd)中, 您需要像这样修改上述代码的挂载目录:
-docker run -d --name wechat-chatgpt -v %cd%/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker run -d --name wechat-ai-assistant -v %cd%/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 # 通过二维码登录
-docker logs -f wechat-chatgpt
+docker logs -f wechat-ai-assistant
 ```
 ## 更新Docker镜像版本
 ```sh
-docker pull holegots/wechat-chatgpt:latest
-docker stop wechat-chatgpt
-docker rm wechat-chatgpt
-docker run -d --name wechat-chatgpt -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-chatgpt:latest
+docker pull holegots/wechat-ai-assistant:latest
+docker stop wechat-ai-assistant
+docker rm wechat-ai-assistant
+docker run -d --name wechat-ai-assistant -v $(pwd)/config.yaml:/app/config.yaml holegots/wechat-ai-assistant:latest
 ```
 ## 安装
 
@@ -128,7 +128,7 @@ npm run dev
 
 ## 🤝 为项目添砖加瓦
 
-欢迎提出 Contributions, issues 与 feature requests!<br />随时查看 [issues page](https://github.com/fuergaosi233/wechat-chatgpt/issues).
+欢迎提出 Contributions, issues 与 feature requests!<br />随时查看 [issues page](https://github.com/fuergaosi233/wechat-ai-assistant/issues).
 
 ## 感谢支持 🙏
 
