@@ -1,4 +1,9 @@
 <h1 align="center">Welcome to wechat-ai-assistant 👋</h1>
+
+this repo forks from https://github.com/fuergaosi233/wechat-chatgpt, Enhanced:
+
+- alidrive search feature.
+
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
