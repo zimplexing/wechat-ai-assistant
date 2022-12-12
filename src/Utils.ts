@@ -1,7 +1,7 @@
 
-import { Message } from "wechaty";
-import { ContactInterface, RoomInterface } from "wechaty/impls";
-const SINGLE_MESSAGE_MAX_SIZE = 500;
+import { Message } from 'wechaty'
+import { ContactInterface, RoomInterface } from 'wechaty/impls'
+const SINGLE_MESSAGE_MAX_SIZE = 500
 
 enum MessageType {
   Unknown = 0,
@@ -26,24 +26,24 @@ enum MessageType {
 
 export default class Utils {
   // The message is segmented according to its size
-  static async trySay(
+  static async trySay (
     talker: RoomInterface | ContactInterface,
     msg: string
   ): Promise<void> {
-    const messages: Array<string> = [];
-    let message = msg;
+    const messages: string[] = []
+    let message = msg
     while (message.length > SINGLE_MESSAGE_MAX_SIZE) {
-      messages.push(message.slice(0, SINGLE_MESSAGE_MAX_SIZE));
-      message = message.slice(SINGLE_MESSAGE_MAX_SIZE);
+      messages.push(message.slice(0, SINGLE_MESSAGE_MAX_SIZE))
+      message = message.slice(SINGLE_MESSAGE_MAX_SIZE)
     }
-    messages.push(message);
+    messages.push(message)
     for (const msg of messages) {
-      await talker.say(msg);
+      await talker.say(msg)
     }
   }
 
   static // Filter out the message that does not need to be processed
-  isNonsense(
+  isNonsense (
     talker: ContactInterface,
     messageType: MessageType,
     text: string
@@ -51,21 +51,21 @@ export default class Utils {
     return (
       talker.self() ||
       messageType > MessageType.GroupNote ||
-      talker.name() == "微信团队" ||
+      talker.name() === '微信团队' ||
       // 语音(视频)消息
-      text.includes("收到一条视频/语音聊天消息，请在手机上查看") ||
+      text.includes('收到一条视频/语音聊天消息，请在手机上查看') ||
       // 红包消息
-      text.includes("收到红包，请在手机上查看") ||
+      text.includes('收到红包，请在手机上查看') ||
       // 位置消息
-      text.includes("/cgi-bin/mmwebwx-bin/webwxgetpubliclinkimg")
-    );
+      text.includes('/cgi-bin/mmwebwx-bin/webwxgetpubliclinkimg')
+    )
   }
 
-  static getRealText(message: Message, userName: string) {
-    const room = message.room();
-    const realTextRegexp = !!room ? new RegExp(`@${userName}\\s(.*)`) : /.*/;
+  static getRealText (message: Message, userName: string): string {
+    const room = message.room()
+    const realTextRegexp = (room != null) ? new RegExp(`@${userName}\\s(.*)`) : /.*/
     const realTextGroup = message.text().match(realTextRegexp)
-    const realText = !!room && realTextGroup ? realTextGroup[1] : message.text()
-    return realText;
+    const realText = !(room == null) && (realTextGroup != null) ? realTextGroup[1] : message.text()
+    return realText
   }
 }

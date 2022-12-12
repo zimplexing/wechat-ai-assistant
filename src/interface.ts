@@ -1,10 +1,10 @@
-import { ChatGPTConversation, ChatGPTAPI } from "chatgpt";
+import { ChatGPTConversation, ChatGPTAPI } from 'chatgpt'
 export interface AccountWithUserInfo {
-  password: string;
-  email: string;
+  password: string
+  email: string
 }
 export interface AccountWithSessionToken {
-  session_token: string;
+  sessionToken: string
 }
 export const isAccountWithUserInfo = (
   account: IAccount
@@ -12,28 +12,28 @@ export const isAccountWithUserInfo = (
   return (
     !!(account as AccountWithUserInfo).email &&
     !!(account as AccountWithUserInfo).password
-  );
-};
+  )
+}
 export const isAccountWithSessionToken = (
   account: IAccount
 ): account is AccountWithSessionToken => {
-  return !!(account as AccountWithSessionToken).session_token;
-};
+  return !!(account as AccountWithSessionToken).sessionToken
+}
 
 // Account will be one in the session token or email and password
-export type IAccount = AccountWithUserInfo | AccountWithSessionToken;
+export type IAccount = AccountWithUserInfo | AccountWithSessionToken
 
 export interface IChatGPTItem {
-  chatGpt: ChatGPTAPI;
-  account: IAccount;
+  chatGpt: ChatGPTAPI
+  account: IAccount
 }
 export interface IConversationItem {
-  conversation: ChatGPTConversation;
-  account: IAccount;
+  conversation: ChatGPTConversation
+  account: IAccount
 }
 
 export interface IConfig {
-  chatGPTAccountPool: IAccount[];
-  chatGptRetryTimes: number;
-  chatPrivateTiggerKeyword: string;
+  chatGPTAccountPool: IAccount[]
+  chatGptRetryTimes: number
+  chatPrivateTiggerKeyword: string
 }
