@@ -4,7 +4,7 @@ import QRCode from 'qrcode'
 import AliDrive from './AliDrive.js'
 import Utils from './Utils.js'
 import WeiboTrending from './WeiboTrending.js'
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from 'dotenv'
 dotenv.config()
 
 // const chatGPTBot = new ChatGPTBot();
@@ -16,7 +16,8 @@ const bot = WechatyBuilder.build({
 
 function weiboTrendingSetup (): void {
   weiboTrending = new WeiboTrending(bot, {
-    room: ['智能小助理']
+    // room: ['智能小助理']
+    contact: ['张鑫']
   })
   weiboTrending.scheduleTask()
 }

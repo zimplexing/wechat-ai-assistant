@@ -1,11 +1,38 @@
 import { WechatyInterface } from 'wechaty/impls'
 import { Message } from 'wechaty'
-import fetch from 'node-fetch'
+import axios from 'axios'
 import { intervalTaskManager } from './IntervalTaskManager.js'
 import dayjs from 'dayjs'
 import Utils from './Utils.js'
 import { Base64 } from 'js-base64'
-import _ from 'lodash'
+
+interface CardGroup {
+  itemid: string
+  card_type: number
+  pic: string
+  scheme: string
+  promotion: object
+  actionlog: {
+    act_code: number
+    lfid: string
+    fid: string
+    luicode: string
+    act_type: number
+    uicode: string
+    ext: string
+  }
+  icon: string
+  desc: string
+}
+
+interface ShortUrlRes {
+  code: number
+  msg: string
+  data: {
+    shortUrl: string
+    url: string
+  }
+}
 
 const WEIBO_TRENDING_API =
   'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
@@ -30,42 +57,59 @@ export default class WeiboTrending {
   ) {}
 
   public scheduleTask (): void {
+    console.log(`Schedule weibo trending task at ${dayjs().format()}`)
     intervalTaskManager.addTask('intervalSendMessage', this.intervalSendMessage, {
       immediately: true,
-      interval: 30 * 60 * 1000
+      interval: 2 * 60 * 60 * 1000
     })
   }
 
-  private readonly getShortUrl = _.throttle(async url => {
+  private async getShortUrl (url: string): Promise<string | undefined> {
     try {
       const shortUrlApi = getShortUrlApi(url)
-      const response = await fetch(shortUrlApi)
-      const { data } = (await response.json()) as any
+      const { data } = (await axios(shortUrlApi)).data as ShortUrlRes
       return data.shortUrl
     } catch (error) {
       console.error(error)
     }
-  }, 1500)
+  }
+
+  private async generateShortUrl (items: CardGroup[], count = 0): Promise<CardGroup[]> {
+    return await new Promise((resolve, reject) => {
+      if (count < items.length) {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setTimeout(async () => {
+          const shortUrl = await this.getShortUrl(items[count].scheme)
+          shortUrl && (items[count].scheme = shortUrl)
+          this.generateShortUrl(items, count + 1).then(resolve).catch(reject)
+        }, 1000)
+      } else {
+        resolve(items)
+      }
+    })
+  }
 
   private async getTrendingData (): Promise<string> {
-    const response = await fetch(WEIBO_TRENDING_API)
-    const data = (await response.json()) as any
-    if (data.ok === 1) {
-      const items = data.data.cards[0]?.card_group as any[]
-      let msgTemplate = '当前微博热搜：\n'
-      let idx = 1
-      for await (const item of items.slice(1, 11)) {
-        const url = await this.getShortUrl(item.scheme)
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        msgTemplate += `${idx++}. ${item.desc} ${url}\n`
-      }
-      return msgTemplate
+    const response = await axios(WEIBO_TRENDING_API)
+    if (response.data.ok === 1) {
+      const items = response.data.data.cards[0]?.card_group as CardGroup[]
+      const newItems = await this.generateShortUrl(
+        // 过滤广告
+        items.filter(v => !v.promotion)
+          .slice(1, 11)
+      )
+      return newItems.reduce((pre, cur, idx) => {
+        pre += `${++idx}. ${cur.desc} ${cur.scheme}\n`
+        return pre
+      }, '当前微博热搜：\n')
     }
     return ''
   }
 
-  // 抽象成一个广播消息的方法到 utils 方法中
   private readonly intervalSendMessage: () => Promise<void> = async () => {
+    console.log(`
+      Trigger interval task(weiboTrending), current time: ${dayjs().format()}, hour: ${dayjs().hour()}
+    `)
     const currentHour = dayjs().hour()
     if (currentHour < 9) return
     const trendingData = await this.getTrendingData()
@@ -77,7 +121,7 @@ export default class WeiboTrending {
       const contact = await this._bot.Room.find({ topic: name })
       await contact?.say(trendingData)
     }
-    console.log('update weibo trending')
+    console.log('updated weibo trending')
   }
 
   private shouldTriggerSearch (message: string, isGroup: boolean): boolean {

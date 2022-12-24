@@ -2,7 +2,7 @@
 import { ContactInterface, RoomInterface } from 'wechaty/impls'
 import { Message } from 'wechaty'
 import Utils from './Utils.js'
-import fetch from 'node-fetch'
+import axios from 'axios'
 
 export default class AliDrive {
   botName: string = ''
@@ -15,8 +15,9 @@ export default class AliDrive {
     await Utils.trySay(room ?? talker, `正在努力搜索 ${searchKey}...`)
     let message = ''
     let result = ''
-    const response = await fetch(`https://yiso.fun/api/search?name=${searchKey}&pageNo=1&pageSize=8`)
-    const { data: { list } } = await response.json() as any
+    const response = await axios(`https://yiso.fun/api/search?name=${searchKey}&pageNo=1&pageSize=8`)
+    console.log(JSON.stringify(response.data))
+    const list = response.data.data.list
     if (!list.length) {
       await Utils.trySay(room ?? talker, '抱歉，未找到资源')
       return
