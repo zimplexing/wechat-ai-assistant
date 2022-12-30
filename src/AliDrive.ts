@@ -2,8 +2,7 @@
 import { ContactInterface, RoomInterface } from 'wechaty/impls'
 import { Message } from 'wechaty'
 import Utils from './Utils.js'
-import cloudscraper from 'cloudscraper'
-
+import axios from 'axios'
 export default class AliDrive {
   botName: string = ''
   public setBotName (botName: string): void {
@@ -15,9 +14,9 @@ export default class AliDrive {
     await Utils.trySay(room ?? talker, `正在努力搜索 ${searchKey}...`)
     let message = ''
     let result = ''
-    const response = (await cloudscraper.get(`https://yiso.fun/api/search?name=${encodeURIComponent(searchKey)}&pageNo=1&pageSize=8`)) as unknown as string
-    console.log(response)
-    const list = JSON.parse(response).data.list
+    const response = await axios.get(`https://yiso.fun/api/search?name=${encodeURIComponent(searchKey)}&pageNo=1&pageSize=8`)
+    console.log(JSON.stringify(response.data))
+    const list = response.data.data.list
     if (!list.length) {
       await Utils.trySay(room ?? talker, '抱歉，未找到资源')
       return
