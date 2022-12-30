@@ -2,7 +2,9 @@
 import { ContactInterface, RoomInterface } from 'wechaty/impls'
 import { Message } from 'wechaty'
 import Utils from './Utils.js'
-import axios from 'axios'
+// import axios from 'axios'
+import fetch from 'node-fetch'
+
 export default class AliDrive {
   botName: string = ''
   public setBotName (botName: string): void {
@@ -14,9 +16,27 @@ export default class AliDrive {
     await Utils.trySay(room ?? talker, `正在努力搜索 ${searchKey}...`)
     let message = ''
     let result = ''
-    const response = await axios.get(`https://yiso.fun/api/search?name=${encodeURIComponent(searchKey)}&pageNo=1&pageSize=8`)
-    console.log(JSON.stringify(response.data))
-    const list = response.data.data.list
+    // const response = await axios.get(`https://yiso.fun/api/search?name=${encodeURIComponent(searchKey)}&pageNo=1&pageSize=8`)
+    // console.log(JSON.stringify(response.data))
+    // const list = response.data.data.list
+    const data = await fetch('https://gitcafe.net/tool/alipaper/', {
+      headers: {
+        accept: '*/*',
+        'accept-language': 'zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en;q=0.6,am;q=0.5,de-LI;q=0.4,de;q=0.3',
+        'content-type': 'application/x-www-form-urlencoded',
+        'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site'
+      },
+      referrer: 'https://u.gitcafe.net/',
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      body: `action=search&keyword=${searchKey}`,
+      method: 'POST'
+    }).then(async res => await res.json()) as Array<{ title: string, key: string }>
+    const list = data.map(v => ({ name: v.title, url: `https://www.aliyundrive.com/s/${v.key}` }))
     if (!list.length) {
       await Utils.trySay(room ?? talker, '抱歉，未找到资源')
       return
