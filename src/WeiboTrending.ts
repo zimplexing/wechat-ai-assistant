@@ -3,9 +3,13 @@ import { Message } from 'wechaty'
 import axios from 'axios'
 import { intervalTaskManager } from './IntervalTaskManager.js'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezome from 'dayjs/plugin/timezone'
 import Utils from './Utils.js'
 import { Base64 } from 'js-base64'
-
+dayjs.extend(utc)
+dayjs.extend(timezome)
+dayjs.tz.setDefault('Asia/Shanghai')
 interface CardGroup {
   itemid: string
   card_type: number
