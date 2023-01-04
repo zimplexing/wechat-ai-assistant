@@ -4,11 +4,11 @@ import axios from 'axios'
 import { intervalTaskManager } from './IntervalTaskManager.js'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
-import timezome from 'dayjs/plugin/timezone.js'
+import timezone from 'dayjs/plugin/timezone.js'
 import Utils from './Utils.js'
 import { Base64 } from 'js-base64'
 dayjs.extend(utc)
-dayjs.extend(timezome)
+dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Shanghai')
 interface CardGroup {
   itemid: string
@@ -61,7 +61,7 @@ export default class WeiboTrending {
   ) {}
 
   public scheduleTask (): void {
-    console.log(`Schedule weibo trending task at ${dayjs().format()}`)
+    console.log(`Schedule weibo trending task at ${dayjs().tz().format()}`)
     intervalTaskManager.addTask('intervalSendMessage', this.intervalSendMessage, {
       immediately: true,
       interval: 2 * 60 * 60 * 1000
@@ -112,9 +112,9 @@ export default class WeiboTrending {
 
   private readonly intervalSendMessage: () => Promise<void> = async () => {
     console.log(`
-      Trigger interval task(weiboTrending), current time: ${dayjs().format()}, hour: ${dayjs().hour()}
+      Trigger interval task(weiboTrending), current time: ${dayjs().tz().format()}, hour: ${dayjs().tz().hour()}
     `)
-    const currentHour = dayjs().hour()
+    const currentHour = dayjs().tz().hour()
     if (currentHour < 9) return
     const trendingData = await this.getTrendingData()
     for (const name of this._targetContacts?.contact ?? []) {
